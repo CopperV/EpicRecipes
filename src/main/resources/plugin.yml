@@ -1,0 +1,17 @@
+name: EpicRecipes
+version: 0.95
+main: me.Vark123.EpicRecipes.Main
+author: Vark123
+depend: [EpicRPG,MythicMobs,NBTAPI]
+api-version: 1.16
+
+commands:
+  crafting:
+    aliases: [wytworz, stworz, stol]
+  recipe:
+    aliases: [przepis]
+  recipes:
+    aliases: [przepisy]
+  teacher:
+  profession:
+    aliases: [profesja, rzemioslo, profesje, rzemiosla]
