@@ -18,7 +18,7 @@ public class ShapelessRecipe extends ARecipe {
 			@NonNull String recipeId, 
 			@NonNull RecipeGroup group, 
 			@NonNull String mmResult) {
-		this(recipe, recipeId, group, mmResult, 1);
+		this(recipe, recipeId, group, mmResult, true);
 	}
 
 	public ShapelessRecipe(
@@ -26,8 +26,18 @@ public class ShapelessRecipe extends ARecipe {
 			@NonNull String recipeId, 
 			@NonNull RecipeGroup group, 
 			@NonNull String mmResult, 
+			boolean visible) {
+		this(recipe, recipeId, group, mmResult, visible, 1);
+	}
+
+	public ShapelessRecipe(
+			@NonNull Map<String, Integer> recipe,
+			@NonNull String recipeId, 
+			@NonNull RecipeGroup group, 
+			@NonNull String mmResult, 
+			boolean visible,
 			int amount) {
-		super(recipeId, group, mmResult, amount);
+		super(recipeId, group, mmResult, visible, amount);
 		this.recipe = recipe;
 	}
 

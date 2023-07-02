@@ -20,26 +20,27 @@ public final class RecipeGroupManager {
 		return inst;
 	}
 
-	public void createGroup(String groupId, String display) {
-		createGroup(groupId, display, false);
+	public RecipeGroup createGroup(String groupId, String display) {
+		return createGroup(groupId, display, false);
 	}
 	
-	public void createGroup(String groupId, String display, boolean groupVisible) {
-		createGroup(null, groupId, display, groupVisible);
+	public RecipeGroup createGroup(String groupId, String display, boolean groupVisible) {
+		return createGroup(null, groupId, display, groupVisible);
 	}
 	
-	public void createGroup(RecipeGroup father, String groupId, String display, boolean groupVisible) {
+	public RecipeGroup createGroup(RecipeGroup father, String groupId, String display, boolean groupVisible) {
 		RecipeGroup group = new RecipeGroup(father, groupId, display, groupVisible);
-		createGroup(group);
+		return createGroup(group);
 	}
 	
-	public void createGroup(RecipeGroup group) {
+	public RecipeGroup createGroup(RecipeGroup group) {
 		groupContainer.add(group);
 		RecipeGroup father = group.getFather();
 		if(father != null
 				&& groupContainer.contains(father)) {
 			father.addSon(group);
 		}
+		return group;
 	}
 	
 }
