@@ -1,7 +1,7 @@
 package me.Vark123.EpicRecipes.RecipeSystem;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.Getter;
 
@@ -10,10 +10,10 @@ public final class RecipeManager {
 
 	private static final RecipeManager inst = new RecipeManager();
 	
-	private final Set<ARecipe> recipeContainer;
+	private final Map<String, ARecipe> recipeContainer;
 	
 	private RecipeManager() {
-		recipeContainer = new HashSet<>();
+		recipeContainer = new HashMap<>();
 	}
 	
 	public static final RecipeManager get() {
@@ -21,7 +21,7 @@ public final class RecipeManager {
 	}
 	
 	public void addRecipe(ARecipe recipe) {
-		recipeContainer.add(recipe);
+		recipeContainer.put(recipe.getRecipeId(), recipe);
 		RecipeGroup group = recipe.getGroup();
 		group.addRecipe(recipe);
 	}

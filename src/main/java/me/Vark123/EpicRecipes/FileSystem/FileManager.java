@@ -2,17 +2,29 @@ package me.Vark123.EpicRecipes.FileSystem;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import me.Vark123.EpicRecipes.Main;
+import me.Vark123.EpicRecipes.PlayerSystem.EpicCraftPlayer;
+import me.Vark123.EpicRecipes.ProfessionSystem.AProfession;
+import me.Vark123.EpicRecipes.ProfessionSystem.Impl.Alchemia;
+import me.Vark123.EpicRecipes.ProfessionSystem.Impl.Jubilerstwo;
+import me.Vark123.EpicRecipes.ProfessionSystem.Impl.Kowalstwo;
+import me.Vark123.EpicRecipes.ProfessionSystem.Impl.Luczarstwo;
+import me.Vark123.EpicRecipes.ProfessionSystem.Impl.Platnerstwo;
 import me.Vark123.EpicRecipes.RecipeSystem.ARecipe;
 import me.Vark123.EpicRecipes.RecipeSystem.RecipeGroup;
 import me.Vark123.EpicRecipes.RecipeSystem.RecipeGroupManager;
@@ -135,9 +147,9 @@ public final class FileManager {
 		});
 		
 		shapelessYml.getKeys(false).stream().forEach(key -> {
-			String strItem = shapedYml.getString(key + ".result");
-			int amount = shapedYml.getInt(key + ".amount");
-			boolean visible = shapedYml.getBoolean(key + ".visible", true);
+			String strItem = shapelessYml.getString(key + ".result");
+			int amount = shapelessYml.getInt(key + ".amount");
+			boolean visible = shapelessYml.getBoolean(key + ".visible", true);
 			Map<String, Integer> recipe = getShapelessRecipe(shapelessYml.getConfigurationSection(key+".recipe"));
 
 			ConfigurationSection section = YamlConfiguration.loadConfiguration(groups).getConfigurationSection("root");
@@ -200,6 +212,88 @@ public final class FileManager {
 			recipe.put(strItem, amount);
 		});
 		return recipe;
+	}
+	
+	public EpicCraftPlayer loadPlayer(Player p) {
+		File f = getPlayerFile(p);
+		if(f == null) {
+			System.out.println("Cannot read player recipes file ["+p.getName()+"]");
+			return new EpicCraftPlayer(p, new HashSet<>(), new HashSet<>());
+		}
+		
+		YamlConfiguration fYml = YamlConfiguration.loadConfiguration(f);
+		
+		List<String> strLearnedRecipes = fYml.getStringList("learned_recipes");
+		Collection<ARecipe> learnedRecipes = strLearnedRecipes.stream()
+				.filter(s -> {
+					return RecipeManager.get().getRecipeContainer().containsKey(s);
+				}).map(s -> {
+					return RecipeManager.get().getRecipeContainer().get(s);
+				}).collect(Collectors.toSet());
+		
+		Set<AProfession> professions = new HashSet<>();
+		int kowalstwoLevel = fYml.getInt("kowalstwo_level", 0);
+		int kowalstwoProgress = fYml.getInt("kowalstwo_progress", 0);
+		int alchemiaLevel = fYml.getInt("alchemia_level", 0);
+		int alchemiaProgress = fYml.getInt("alchemia_progress", 0);
+		int platnerstwoLevel = fYml.getInt("platnerstwo_level", 0);
+		int platnerstwoProgress = fYml.getInt("platnerstwo_progress", 0);
+		int luczarstwoLevel = fYml.getInt("luczarstwo_level", 0);
+		int luczarstwoProgress = fYml.getInt("luczarstwo_progress", 0);
+		int jubilerstwoLevel = fYml.getInt("jubilerstwo_level", 0);
+		int jubilerstwoProgress = fYml.getInt("jubilerstwo_progress", 0);
+		professions.add(new Kowalstwo(kowalstwoLevel, kowalstwoProgress));
+		professions.add(new Alchemia(alchemiaLevel, alchemiaProgress));
+		professions.add(new Platnerstwo(platnerstwoLevel, platnerstwoProgress));
+		professions.add(new Luczarstwo(luczarstwoLevel, luczarstwoProgress));
+		professions.add(new Jubilerstwo(jubilerstwoLevel, jubilerstwoProgress));
+	
+		EpicCraftPlayer epicPlayer = new EpicCraftPlayer(p, learnedRecipes, professions);
+		return epicPlayer;
+	}
+	
+	public void savePlayer(EpicCraftPlayer epicPlayer) {
+		Player p = epicPlayer.getPlayer();
+		File f = getPlayerFile(p);
+		if(f == null) {
+			System.out.println("Cannot save player recipes file ["+p.getName()+"]");
+			return;
+		}
+
+		YamlConfiguration fYml = YamlConfiguration.loadConfiguration(f);
+
+		List<String> learnedRecipes = epicPlayer.getLearnedRecipes().stream().map(recipe -> {
+			return recipe.getRecipeId();
+		}).toList();
+		fYml.set("learned_recipes", learnedRecipes);
+		
+		epicPlayer.getProfessions().forEach(prof -> {
+			String name = prof.getClass().getSimpleName().toLowerCase();
+			fYml.set(name+"_level", prof.getLevel());
+			fYml.set(name+"_progress", prof.getProgress());
+		});
+		
+		try {
+			fYml.save(f);
+		} catch (IOException e) {			
+			System.out.println("Cannot save player recipes file ["+p.getName()+"]");
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private File getPlayerFile(Player p) {
+		String fileName = p.getName().toLowerCase()+".yml";
+		File f = new File(playerDir, fileName);
+		if(!f.exists()) {
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return f;
 	}
 
 }
