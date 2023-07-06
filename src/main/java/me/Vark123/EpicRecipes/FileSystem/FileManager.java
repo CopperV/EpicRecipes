@@ -99,14 +99,14 @@ public final class FileManager {
 		RecipeGroup root = RecipeGroupManager.get().createGroup(groupId, display, visible);
 		loadSons(rootSection, root);
 
-		RecipeGroupManager.get().createGroup(root, "unasigned", "&7&oNieprzypisane", true);
+		RecipeGroupManager.get().createGroup(root, "unasigned", "§7§oNieprzypisane", true);
 	}
 
 	private void loadSons(ConfigurationSection fatherSection, RecipeGroup father) {
 		if (!fatherSection.contains("sons"))
 			return;
 		ConfigurationSection sonsSection = fatherSection.getConfigurationSection("sons");
-		sonsSection.getKeys(false).forEach(key -> {
+		sonsSection.getKeys(false).stream().forEachOrdered(key -> {
 			ConfigurationSection son = sonsSection.getConfigurationSection(key);
 			String groupId = son.getString("groupName");
 			String display = ChatColor.translateAlternateColorCodes('&', son.getString("display"));
@@ -120,8 +120,9 @@ public final class FileManager {
 	private void loadRecipes() {
 		YamlConfiguration shapedYml = YamlConfiguration.loadConfiguration(shaped);
 		YamlConfiguration shapelessYml = YamlConfiguration.loadConfiguration(shapeless);
-
-		shapedYml.getKeys(false).stream().forEach(key -> {
+		YamlConfiguration configYml = YamlConfiguration.loadConfiguration(config);
+		
+		shapedYml.getKeys(false).stream().forEachOrdered(key -> {
 			String strItem = shapedYml.getString(key + ".result");
 			int amount = shapedYml.getInt(key + ".amount");
 			boolean visible = shapedYml.getBoolean(key + ".visible", true);
@@ -169,6 +170,15 @@ public final class FileManager {
 					throw new IllegalArgumentException("Cannot match recipe "+key+" to any group");
 				});
 			});
+		});
+		
+		List<String> commonRecipes = configYml.getStringList("common_recipes");
+		commonRecipes.stream().filter(recipe -> {
+			return RecipeManager.get().getRecipeContainer().containsKey(recipe);
+		}).map(recipe -> {
+			return RecipeManager.get().getRecipeContainer().get(recipe);
+		}).forEach(recipe -> {
+			recipe.setCommon(true);
 		});
 	}
 

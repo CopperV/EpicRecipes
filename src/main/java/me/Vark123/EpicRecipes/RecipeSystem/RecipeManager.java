@@ -1,6 +1,6 @@
 package me.Vark123.EpicRecipes.RecipeSystem;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import lombok.Getter;
@@ -13,7 +13,7 @@ public final class RecipeManager {
 	private final Map<String, ARecipe> recipeContainer;
 	
 	private RecipeManager() {
-		recipeContainer = new HashMap<>();
+		recipeContainer = new LinkedHashMap<>();
 	}
 	
 	public static final RecipeManager get() {

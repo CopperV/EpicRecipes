@@ -1,10 +1,13 @@
 package me.Vark123.EpicRecipes.RecipeSystem;
 
+import java.util.Map;
+
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
 @Getter
 public abstract class ARecipe {
@@ -14,6 +17,8 @@ public abstract class ARecipe {
 	protected String mmResult;
 	protected int amount;
 	private boolean recipeVisible;
+	@Setter
+	private boolean common;
 	
 	public ARecipe(
 			@NonNull String recipeId,
@@ -39,10 +44,12 @@ public abstract class ARecipe {
 		this.mmResult = mmResult;
 		this.amount = amount;
 		this.recipeVisible = visible;
+		this.common = false;
 	}
 	
 	public abstract boolean canCraft(Inventory inv);
 	public abstract void craft(Inventory inv);
 	public abstract ItemStack getCraftResult();
+	public abstract Map<Integer, ItemStack> getRecipeView();
 	
 }

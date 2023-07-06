@@ -1,6 +1,6 @@
 package me.Vark123.EpicRecipes.RecipeSystem;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import lombok.Getter;
@@ -13,7 +13,7 @@ public final class RecipeGroupManager {
 	private final Set<RecipeGroup> groupContainer;
 	
 	private RecipeGroupManager() {
-		groupContainer = new HashSet<>();
+		groupContainer = new LinkedHashSet<>();
 	}
 	
 	public static final RecipeGroupManager get() {
