@@ -48,7 +48,6 @@ public abstract class ARecipe {
 	}
 	
 	public abstract boolean canCraft(Inventory inv);
-	public abstract void craft(Inventory inv);
 	public abstract ItemStack getCraftResult();
 	public abstract Map<Integer, ItemStack> getRecipeView();
 	

@@ -18,6 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import me.Vark123.EpicRecipes.Main;
+import me.Vark123.EpicRecipes.CraftingSystem.CraftingManager;
 import me.Vark123.EpicRecipes.PlayerSystem.EpicCraftPlayer;
 import me.Vark123.EpicRecipes.ProfessionSystem.AProfession;
 import me.Vark123.EpicRecipes.ProfessionSystem.Impl.Alchemia;
@@ -87,6 +88,14 @@ public final class FileManager {
 
 		loadRecipeGroups();
 		loadRecipes();
+		loadCraftBlocks();
+	}
+	
+	private void loadCraftBlocks() {
+		YamlConfiguration fYml = YamlConfiguration.loadConfiguration(config);
+		fYml.getStringList("regions").forEach(region -> {
+			CraftingManager.get().registerCraftBlock(region);
+		});
 	}
 
 	private void loadRecipeGroups() {

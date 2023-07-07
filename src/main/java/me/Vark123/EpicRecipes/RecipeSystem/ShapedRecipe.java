@@ -3,12 +3,15 @@ package me.Vark123.EpicRecipes.RecipeSystem;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import de.tr7zw.nbtapi.NBTItem;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import lombok.Getter;
 import lombok.NonNull;
+import me.Vark123.EpicRecipes.Utils.Utils;
 
 @Getter
 public class ShapedRecipe extends ARecipe {
@@ -45,17 +48,30 @@ public class ShapedRecipe extends ARecipe {
 
 	@Override
 	public boolean canCraft(Inventory inv) {
-		return false;
-	}
-
-	@Override
-	public void craft(Inventory inv) {
-		
+		for(int slot = 0; slot < 25; ++slot) {
+			int invSlot = Utils.mapCraftToInv(slot);
+			ItemStack it = inv.getItem(invSlot);
+			if(it == null && recipe.containsKey(slot))
+				return false;
+			if(it != null && !recipe.containsKey(slot))
+				return false;
+			if(it == null
+					|| it.getType().equals(Material.AIR))
+				continue;
+			NBTItem nbt = new NBTItem(it);
+			if(!nbt.hasTag("MYTHIC_TYPE"))
+				return false;
+			String mmId = nbt.getString(mmResult);
+			if(!mmId.equals(recipe.get(slot)))
+				return false;
+		}
+		return true;
 	}
 
 	@Override
 	public ItemStack getCraftResult() {
-		return null;
+		ItemStack it = MythicBukkit.inst().getItemManager().getItemStack(mmResult, amount);
+		return it;
 	}
 
 	@Override

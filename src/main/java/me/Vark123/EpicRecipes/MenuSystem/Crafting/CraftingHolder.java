@@ -1,4 +1,4 @@
-package me.Vark123.EpicRecipes.CraftingSystem;
+package me.Vark123.EpicRecipes.MenuSystem.Crafting;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
