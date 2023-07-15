@@ -21,6 +21,7 @@ import me.Vark123.EpicRecipes.Main;
 import me.Vark123.EpicRecipes.CraftingSystem.CraftingManager;
 import me.Vark123.EpicRecipes.PlayerSystem.EpicCraftPlayer;
 import me.Vark123.EpicRecipes.ProfessionSystem.AProfession;
+import me.Vark123.EpicRecipes.ProfessionSystem.ProfessionManager;
 import me.Vark123.EpicRecipes.ProfessionSystem.Impl.Alchemia;
 import me.Vark123.EpicRecipes.ProfessionSystem.Impl.Jubilerstwo;
 import me.Vark123.EpicRecipes.ProfessionSystem.Impl.Kowalstwo;
@@ -89,6 +90,23 @@ public final class FileManager {
 		loadRecipeGroups();
 		loadRecipes();
 		loadCraftBlocks();
+		loadProfItems();
+	}
+	
+	private void loadProfItems() {
+		YamlConfiguration fYml = YamlConfiguration.loadConfiguration(config);
+		ConfigurationSection section = fYml.getConfigurationSection("profession_upgrade");
+		section.getKeys(false).stream().forEach(key -> {
+			ConfigurationSection profSection = section.getConfigurationSection(key);
+			profSection.getKeys(false).parallelStream()
+				.filter(RecipeManager.get().getRecipeContainer()::containsKey)
+				.map(RecipeManager.get().getRecipeContainer()::get)
+				.forEach(recipe -> {
+					String id = recipe.getRecipeId();
+					int points = profSection.getInt(id+".points");
+					ProfessionManager.get().addProfItem(key, recipe, points, recipe.getMmResult());
+				});
+		});
 	}
 	
 	private void loadCraftBlocks() {
@@ -261,11 +279,11 @@ public final class FileManager {
 		int luczarstwoProgress = fYml.getInt("luczarstwo_progress", 0);
 		int jubilerstwoLevel = fYml.getInt("jubilerstwo_level", 0);
 		int jubilerstwoProgress = fYml.getInt("jubilerstwo_progress", 0);
-		professions.add(new Kowalstwo(kowalstwoLevel, kowalstwoProgress));
-		professions.add(new Alchemia(alchemiaLevel, alchemiaProgress));
-		professions.add(new Platnerstwo(platnerstwoLevel, platnerstwoProgress));
-		professions.add(new Luczarstwo(luczarstwoLevel, luczarstwoProgress));
-		professions.add(new Jubilerstwo(jubilerstwoLevel, jubilerstwoProgress));
+		professions.add(new Kowalstwo(p, kowalstwoLevel, kowalstwoProgress));
+		professions.add(new Alchemia(p, alchemiaLevel, alchemiaProgress));
+		professions.add(new Platnerstwo(p, platnerstwoLevel, platnerstwoProgress));
+		professions.add(new Luczarstwo(p, luczarstwoLevel, luczarstwoProgress));
+		professions.add(new Jubilerstwo(p, jubilerstwoLevel, jubilerstwoProgress));
 	
 		EpicCraftPlayer epicPlayer = new EpicCraftPlayer(p, learnedRecipes, professions);
 		return epicPlayer;

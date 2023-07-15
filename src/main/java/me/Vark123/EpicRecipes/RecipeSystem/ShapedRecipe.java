@@ -61,7 +61,7 @@ public class ShapedRecipe extends ARecipe {
 			NBTItem nbt = new NBTItem(it);
 			if(!nbt.hasTag("MYTHIC_TYPE"))
 				return false;
-			String mmId = nbt.getString(mmResult);
+			String mmId = nbt.getString("MYTHIC_TYPE");
 			if(!mmId.equals(recipe.get(slot)))
 				return false;
 		}

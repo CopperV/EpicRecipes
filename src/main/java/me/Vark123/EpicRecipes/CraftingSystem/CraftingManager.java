@@ -24,6 +24,7 @@ import me.Vark123.EpicRPG.Utils.Utils;
 import me.Vark123.EpicRecipes.MenuSystem.Crafting.CraftingInvManager;
 import me.Vark123.EpicRecipes.PlayerSystem.EpicCraftPlayer;
 import me.Vark123.EpicRecipes.PlayerSystem.PlayerManager;
+import me.Vark123.EpicRecipes.ProfessionSystem.ProfessionManager;
 import me.Vark123.EpicRecipes.RecipeSystem.ARecipe;
 import me.Vark123.EpicRecipes.RecipeSystem.RecipeManager;
 
@@ -83,6 +84,22 @@ public final class CraftingManager {
 		ARecipe recipe = RecipeManager.get().getRecipeContainer().get(nbt.getString("recipe_id"));
 		if(recipe == null)
 			return;
+		
+		EpicCraftPlayer craftPlayer = PlayerManager.get().getPlayer(p).orElseThrow();
+		
+		CraftEvent event = new CraftEvent(p, recipe);
+		Bukkit.getPluginManager().callEvent(event);
+		if(event.isCancelled())
+			return;
+		
+		ProfessionManager.get().getContainer().stream()
+			.filter(profItem -> recipe.equals(profItem.getRecipe()))
+			.forEach(profItem -> {
+				craftPlayer.getProfessions().stream()
+					.filter(prof -> prof.getClass().getName().equals(profItem.getProfessionClass().getName()))
+					.forEach(prof -> prof.addProgress(profItem.getPoints()));
+			});
+		
 		result = recipe.getCraftResult();
 		Utils.dropItemStack(p, result);
 		freeSlots.forEach(i -> {
