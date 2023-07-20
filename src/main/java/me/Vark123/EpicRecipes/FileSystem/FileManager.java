@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -33,6 +34,14 @@ import me.Vark123.EpicRecipes.RecipeSystem.RecipeGroupManager;
 import me.Vark123.EpicRecipes.RecipeSystem.RecipeManager;
 import me.Vark123.EpicRecipes.RecipeSystem.ShapedRecipe;
 import me.Vark123.EpicRecipes.RecipeSystem.ShapelessRecipe;
+import me.Vark123.EpicRecipes.TeacherSystem.LearnCost;
+import me.Vark123.EpicRecipes.TeacherSystem.LearningRecipe;
+import me.Vark123.EpicRecipes.TeacherSystem.TeachManager;
+import me.Vark123.EpicRecipes.TeacherSystem.Teacher;
+import me.Vark123.EpicRecipes.TeacherSystem.LearningCosts.ExperienceCost;
+import me.Vark123.EpicRecipes.TeacherSystem.LearningCosts.MoneyCost;
+import me.Vark123.EpicRecipes.TeacherSystem.LearningCosts.ReputationCost;
+import me.Vark123.EpicRecipes.TeacherSystem.LearningCosts.RzemiosloCost;
 
 public final class FileManager {
 
@@ -91,6 +100,58 @@ public final class FileManager {
 		loadRecipes();
 		loadCraftBlocks();
 		loadProfItems();
+		loadLearnItems();
+		loadTeachers();
+	}
+	
+	private void loadTeachers() {
+		YamlConfiguration fYml = YamlConfiguration.loadConfiguration(teachers);
+		ConfigurationSection section = fYml.getConfigurationSection("teachers");
+		section.getKeys(false).stream().forEach(key -> {
+			ConfigurationSection teacherSection = section.getConfigurationSection(key);
+			
+			String id = teacherSection.getString("id");
+			Collection<LearningRecipe> recipesToTeach = teacherSection.getStringList("recipes")
+					.stream()
+					.filter(recId -> TeachManager.get().getById(recId).isPresent())
+					.map(recId -> TeachManager.get().getById(recId).get())
+					.toList();
+			TeachManager.get().getTeachers().put(id, new Teacher(id, recipesToTeach));
+		});
+	}
+	
+	private void loadLearnItems() {
+		YamlConfiguration fYml = YamlConfiguration.loadConfiguration(config);
+		ConfigurationSection section = fYml.getConfigurationSection("recipe_requirements");
+		section.getKeys(false).stream().forEach(id -> {
+			ConfigurationSection recipeSection = section.getConfigurationSection(id);
+			String recipeId = recipeSection.getString("recipe_id");
+			ARecipe recipe = RecipeManager.get().getRecipeContainer().get(recipeId);
+			if(recipe == null)
+				return;
+			
+			Collection<LearnCost> costs = new HashSet<>();
+			if(recipeSection.contains("cost")) {
+				double amount = recipeSection.getDouble("cost");
+				costs.add(new MoneyCost(amount));
+			}
+			if(recipeSection.contains("profession")) {
+				String prof = recipeSection.getString("profession");
+				costs.add(new RzemiosloCost(prof));
+				if(recipeSection.contains("level")) {
+					int level = recipeSection.getInt("level");
+					costs.add(new ExperienceCost(prof, level));
+				}
+			}
+			if(recipeSection.contains("reputation")) {
+				String[] repArr = recipeSection.getString("reputation").split(":");
+				if(StringUtils.isNumeric(repArr[1]) 
+						&& !repArr[1].contains(".")) {
+					costs.add(new ReputationCost(repArr[0], Integer.parseInt(repArr[1])));
+				}
+			}
+			TeachManager.get().getRecipesToLearn().add(new LearningRecipe(recipe, costs));
+		});
 	}
 	
 	private void loadProfItems() {

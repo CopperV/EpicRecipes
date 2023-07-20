@@ -1,14 +1,21 @@
 package me.Vark123.EpicRecipes;
 
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
 import me.Vark123.EpicRecipes.FileSystem.FileManager;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 
 @Getter
 public final class Main extends JavaPlugin {
 
 	private static Main inst;
+
+	public static Economy eco;
+	public static Permission perm;
 	
 	private String prefix;
 
@@ -22,6 +29,9 @@ public final class Main extends JavaPlugin {
 		
 		FileManager.get().init();
 		
+		checkEco();
+		checkPerm();
+		
 		super.onEnable();
 	}
 
@@ -32,6 +42,30 @@ public final class Main extends JavaPlugin {
 	
 	public final static Main inst() {
 		return inst;
+	}
+	
+	private boolean checkEco() {
+		RegisteredServiceProvider<Economy> ecop = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
+		if(ecop == null) {
+			return false;
+		}
+		eco = ecop.getProvider();
+		if(eco == null) {
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean checkPerm() {
+		RegisteredServiceProvider<Permission> ecop = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
+		if(ecop == null) {
+			return false;
+		}
+		perm = ecop.getProvider();
+		if(perm == null) {
+			return false;
+		}
+		return true;
 	}
 	
 }
