@@ -52,7 +52,7 @@ public class ExperienceCost implements LearnCost {
 		if (prof.getLevel() >= level)
 			return BooleanMessage.ALLOW();
 		return BooleanMessage.DENY(Main.inst().getPrefix()
-				+" §cJestes za malo doswiadczony w tym rzemiosle."
+				+" §cJestes za malo doswiadczony w tym rzemiosle. "
 				+ "Nie mozesz nauczyc sie tego przepisu.");
 	}
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -392,6 +393,44 @@ public final class FileManager {
 			}
 		}
 		return f;
+	}
+	
+	public void saveShapedRecipe(ShapedRecipe recipe) {
+		YamlConfiguration fYml = YamlConfiguration.loadConfiguration(shaped);
+		
+		String id = recipe.getRecipeId();
+		fYml.set(id+".amount", recipe.getAmount());
+		fYml.set(id+".result",recipe.getMmResult());
+		
+		List<String> strRecipe = new LinkedList<String>();
+		for(int i = 0; i < 25; ++i) {
+			strRecipe.add(recipe.getRecipe().getOrDefault(i, "null"));
+		}
+		fYml.set(id+".recipe", strRecipe);
+		
+		try {
+			fYml.save(shaped);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void saveShapelessRecipe(ShapelessRecipe recipe) {
+		YamlConfiguration fYml = YamlConfiguration.loadConfiguration(shapeless);
+
+		String id = recipe.getRecipeId();
+		fYml.set(id+".amount", recipe.getAmount());
+		fYml.set(id+".result",recipe.getMmResult());
+		recipe.getRecipe().forEach((mmId, amount) -> {
+			fYml.set(id+".recipe."+mmId+".mm_id", amount);
+			fYml.set(id+".recipe."+mmId+".amount", amount);
+		});
+		
+		try {
+			fYml.save(shapeless);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

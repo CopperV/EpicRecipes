@@ -32,7 +32,6 @@ public abstract class AProfession extends ABarInfo {
 	
 	public abstract void print(Player p);
 	public void addProgress(int progress) {
-		
 		Optional<ProfessionLevel> oProf = ProfessionLevel.getById(getLevel());
 		if(oProf.isEmpty())
 			return;
@@ -62,9 +61,10 @@ public abstract class AProfession extends ABarInfo {
 			}
 			p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 0.75f);
 			p.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, p.getEyeLocation(), 10, 0.1f, 0.1f, 0.1f, 0.05f);
-		}
+		} else
+			p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0.6f);
 		
-		String title = display+" §a"+profLevel.getDisplay()+" §7[§r"+profLevel+"§7]";
+		String title = display+" §a"+profLevel.getDisplay()+" §7[§r"+profLevel.getId()+"§7]";
 		double barMin = 1;
 		double barMax = 1;
 		if(profLevel.getId() < 12) {

@@ -5,6 +5,8 @@ import org.bukkit.Bukkit;
 import me.Vark123.EpicRecipes.CraftingSystem.CraftBlockClickListener;
 import me.Vark123.EpicRecipes.MenuSystem.Crafting.CraftingClickListener;
 import me.Vark123.EpicRecipes.MenuSystem.Crafting.CraftingCloseListener;
+import me.Vark123.EpicRecipes.MenuSystem.Creators.RecipeCreateCloseListener;
+import me.Vark123.EpicRecipes.MenuSystem.Creators.RecipeCreateInteractListener;
 import me.Vark123.EpicRecipes.MenuSystem.RecipeList.RecipeListMenuListener;
 import me.Vark123.EpicRecipes.MenuSystem.Teacher.TeachMenuListener;
 import me.Vark123.EpicRecipes.PlayerSystem.Listeners.PlayerJoinListener;
@@ -26,6 +28,9 @@ public final class ListenerManager {
 
 		Bukkit.getPluginManager().registerEvents(new RecipeListMenuListener(), inst);
 		Bukkit.getPluginManager().registerEvents(new TeachMenuListener(), inst);
+
+		Bukkit.getPluginManager().registerEvents(new RecipeCreateInteractListener(), inst);
+		Bukkit.getPluginManager().registerEvents(new RecipeCreateCloseListener(), inst);
 	}
 	
 }

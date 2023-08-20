@@ -42,10 +42,5 @@ public class Platnerstwo extends AProfession {
 		p.sendMessage("    "+getDisplay()+"§7: §e"+prof.getDisplay()+" §7[§e"+prof.getId()+"§7]");
 		p.sendMessage("        §2Doswiadczenie: §e"+percent.toString());
 	}
-
-	@Override
-	public void addProgress(int progress) {
-		
-	}
 	
 }
