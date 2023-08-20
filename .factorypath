@@ -97,5 +97,6 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/org/bstats/bstats-bukkit/2.2.1/bstats-bukkit-2.2.1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/bstats/bstats-base/2.2.1/bstats-base-2.2.1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/projectlombok/lombok/1.18.26/lombok-1.18.26.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/lumine/Mythic-Dist/5.3.2/Mythic-Dist-5.3.2.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/de/tr7zw/item-nbt-api-plugin/2.11.3/item-nbt-api-plugin-2.11.3.jar" enabled="true" runInBatchMode="false"/>
 </factorypath>

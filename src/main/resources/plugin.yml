@@ -1,9 +1,9 @@
 name: EpicRecipes
-version: 0.95
+version: 1
 main: me.Vark123.EpicRecipes.Main
 author: Vark123
 depend: [EpicRPG,MythicMobs,NBTAPI]
-api-version: 1.16
+api-version: 1.18
 
 commands:
   crafting:
