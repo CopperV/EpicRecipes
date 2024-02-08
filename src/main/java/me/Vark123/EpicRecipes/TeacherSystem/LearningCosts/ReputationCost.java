@@ -33,7 +33,7 @@ public class ReputationCost implements LearnCost {
 			return BooleanMessage.DENY(Main.inst().getPrefix()
 					+" §cTwoja reputacja u §r"+rep.getDisplayFraction()
 					+ " jest zbyt niska, by sie tego nauczyc: "
-					+ "§a§o"+ReputationLevels.getReputationLevelById(level)+" §7(§f"+rep.getReputationLevel()+"§7)");
+					+ "§a§o"+ReputationLevels.getReputationLevelById(level)+" §7(§f"+level+"§7)");
 		}
 	}
 
@@ -50,8 +50,8 @@ public class ReputationCost implements LearnCost {
 		if(rep == null)
 			return "";
 		return "§8Reputacja "+rep.getDisplayFraction()+"§r§8: §a§o"
-			+rep.getReputationLevel().getName()
-			+" §7[§f"+rep.getReputationLevel().getId()+"§7]";
+			+ReputationLevels.getReputationLevelById(level)
+			+" §7[§f"+level+"§7]";
 	}
 
 }
