@@ -160,7 +160,7 @@ public final class FileManager {
 		ConfigurationSection section = fYml.getConfigurationSection("profession_upgrade");
 		section.getKeys(false).stream().forEach(key -> {
 			ConfigurationSection profSection = section.getConfigurationSection(key);
-			profSection.getKeys(false).parallelStream()
+			profSection.getKeys(false).stream()
 				.filter(RecipeManager.get().getRecipeContainer()::containsKey)
 				.map(RecipeManager.get().getRecipeContainer()::get)
 				.forEach(recipe -> {
@@ -422,7 +422,7 @@ public final class FileManager {
 		fYml.set(id+".amount", recipe.getAmount());
 		fYml.set(id+".result",recipe.getMmResult());
 		recipe.getRecipe().forEach((mmId, amount) -> {
-			fYml.set(id+".recipe."+mmId+".mm_id", amount);
+			fYml.set(id+".recipe."+mmId+".mm_id", mmId);
 			fYml.set(id+".recipe."+mmId+".amount", amount);
 		});
 		
