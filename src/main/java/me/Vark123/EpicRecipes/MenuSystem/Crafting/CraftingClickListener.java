@@ -37,6 +37,8 @@ public class CraftingClickListener implements Listener {
 		if (checkInv.equals(e.getView().getBottomInventory())) {
 			if (e.getClick().equals(ClickType.SHIFT_LEFT) || e.getClick().equals(ClickType.SHIFT_RIGHT)) {
 				checkSlot = e.getInventory().firstEmpty();
+			} else if(e.getClick().equals(ClickType.DOUBLE_CLICK)) {
+				checkSlot = -1;
 			} else {
 				return;
 			}

@@ -24,7 +24,7 @@ public class ProfessionCommand implements CommandExecutor {
 					p = Bukkit.getPlayerExact(args[0]);
 		}
 		Player player = p;
-		PlayerManager.get().getPlayer(p).ifPresent(craftPlayer -> {
+		PlayerManager.get().getPlayer(player).ifPresent(craftPlayer -> {
 			sender.sendMessage(Main.inst().getPrefix()+" §aStan rzemiosl gracza "+player.getName());
 			craftPlayer.getProfessions().forEach(prof -> {
 				prof.print((Player) sender);
